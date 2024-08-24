@@ -52,7 +52,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":presentation"))
+    implementation(project(":domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -66,7 +66,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     kapt(libs.androidx.room.compiler)
     implementation(libs.hilt.android)
-    kapt (libs.hilt.compiler)
+    kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
 
