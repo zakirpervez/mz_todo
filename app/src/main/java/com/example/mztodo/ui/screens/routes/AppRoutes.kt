@@ -9,6 +9,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mztodo.ui.screens.create_todo.CreateTodoScreen
 import com.example.mztodo.ui.screens.splash.SplashScreen
 import com.example.mztodo.ui.screens.todo_list.TodoListScreen
 
@@ -42,7 +43,13 @@ fun AppRoutes(
 
             composable(route = NavigationRoutes.TodoList.route) {
                 TodoListScreen {
+                    navHostController.navigate(NavigationRoutes.CreateTodo.route)
+                }
+            }
 
+            composable(route = NavigationRoutes.CreateTodo.route) {
+                CreateTodoScreen {
+                    navHostController.popBackStack()
                 }
             }
         })
