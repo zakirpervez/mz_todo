@@ -1,6 +1,8 @@
 package com.example.mztodo.ui
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,10 +19,20 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mztodo.ui.screens.routes.AppRoutes
 import com.example.mztodo.ui.screens.splash.SplashScreen
 import com.example.mztodo.ui.theme.MZTodoTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var context: Context
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Toast.makeText(this, "Injection is working ${context}", Toast.LENGTH_LONG).show()
+
         setContent {
             MZTodoTheme {
                 // A surface container using the 'background' color from the theme

@@ -1,27 +1,29 @@
 [versions]
-compileSdk = "34"
-minSdk = "27"
-navigationCompose = "2.7.7"
-roomRuntime = "2.6.1"
-targetSdk = "34"
-versionCode = "1"
-versionName = "1.0"
-jvmTarget = "1.8"
-kotlinCompilerExtensionVersion = "1.5.1"
-
-android-application-plugin = "8.2.2"
-kotlin-android-plugin = "1.9.0"
-
 activity-compose = "1.9.1"
 androidx-junit = "1.2.1"
 appcompat = "1.7.0"
 core-ktx = "1.13.1"
 espresso-core = "3.6.1"
+hiltAndroid = "2.48"
+hiltCompiler = "2.48"
 junit = "4.13.2"
 lifecycle-runtime-ktx = "2.8.4"
 compose-bom = "2024.08.00"
 material = "1.12.0"
 navigationRuntimeKtx = "2.7.7"
+navigationCompose = "2.7.7"
+roomRuntime = "2.6.1"
+
+android-application-plugin = "8.2.2"
+kotlin-android-plugin = "1.9.0"
+
+compileSdk = "34"
+minSdk = "27"
+targetSdk = "34"
+versionCode = "1"
+versionName = "1.0"
+jvmTarget = "1.8"
+kotlinCompilerExtensionVersion = "1.5.1"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -35,6 +37,8 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -51,4 +55,5 @@ androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navig
 android-application = { id = "com.android.application", version.ref = "android-application-plugin" }
 jetbrain-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-android-plugin" }
 androidLibrary = { id = "com.android.library", version.ref = "android-application-plugin" }
+dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 

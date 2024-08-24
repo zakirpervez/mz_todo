@@ -3,4 +3,5 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrain.kotlin.android) apply false
     alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.dagger.hilt.android) apply false
 }

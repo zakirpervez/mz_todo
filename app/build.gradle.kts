@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrain.kotlin.android)
+    alias(libs.plugins.dagger.hilt.android)
     id("kotlin-kapt")
 }
 
@@ -64,6 +65,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.navigation.runtime.ktx)
     kapt(libs.androidx.room.compiler)
+    implementation(libs.hilt.android)
+    kapt (libs.hilt.compiler)
 
     testImplementation(libs.junit)
 
