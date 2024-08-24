@@ -1,4 +1,10 @@
 [versions]
+compileSdk = "34"
+minSdk = "21"
+targetSdk = "34"
+versionCode = "1"
+versionName = "1.0"
+
 android-application-plugin = "8.2.2"
 kotlin-android-plugin = "1.9.22"
 
