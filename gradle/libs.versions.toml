@@ -23,7 +23,7 @@ minSdk = "27"
 targetSdk = "34"
 versionCode = "1"
 versionName = "1.0"
-jvmTarget = "1.8"
+jvmTarget = "17"
 kotlinCompilerExtensionVersion = "1.5.1"
 
 [libraries]
