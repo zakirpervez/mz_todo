@@ -1,6 +1,7 @@
 package com.example.mztodo.ui.screens.todo_list
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,11 +9,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -23,7 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.entities.TodoItem
 import com.example.mztodo.ui.screens.viewmodel.TodoListViewModel
+import com.example.mztodo.ui.theme.Red
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(
     todoListViewModel: TodoListViewModel = hiltViewModel(), onNavigate: () -> Unit
@@ -34,54 +43,54 @@ fun TodoListScreen(
     }
 
     val result = todoListViewModel.todoListState.value
-    Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = {
-            onNavigate()
-        }) {
+    Scaffold(topBar = {
+        TopAppBar(
+            title = { Text(text = "Todo App") },
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        )
+    }, floatingActionButton = {
+        FloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            onClick = {
+                onNavigate()
+            }) {
             Icon(Icons.Default.Add, contentDescription = "Add")
         }
     }) { paddingValues ->
 
-        if (result.isLoading) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
+        Box(
+            contentAlignment = Alignment.TopStart,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            if (result.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-        }
 
-        if (result.errorMessage.isNotEmpty()) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
+            if (result.errorMessage.isNotEmpty()) {
                 Text(
-                    text = result.errorMessage,
-                    modifier = Modifier.align(Alignment.Center)
+                    text = result.errorMessage, modifier = Modifier.align(Alignment.Center)
                 )
             }
-        }
 
-        if (result.todoItems.isNullOrEmpty()) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                Text(text = "No data found, response might be null or empty")
-            }
-        } else {
-            LazyColumn {
-                items(result.todoItems.size) {
-                    TodoItemView(todoItem = result.todoItems[it])
+            if (result.todoItems.isNullOrEmpty()) {
+                Text(
+                    text = "No data found, response might be null or empty",
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Red,
+                )
+            } else {
+                LazyColumn {
+                    items(result.todoItems.size) {
+                        TodoItemView(todoItem = result.todoItems[it])
+                    }
                 }
             }
         }
@@ -90,13 +99,21 @@ fun TodoListScreen(
 
 @Composable
 fun TodoItemView(todoItem: TodoItem) {
-    Box(
-        contentAlignment = Alignment.Center,
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .padding(8.dp), // Adjusted height for a more card-like appearance
+        elevation = CardDefaults.cardElevation(4.dp) // Adjust elevation as needed
     ) {
-        Text(text = todoItem.text, modifier = Modifier.align(Alignment.CenterStart))
+        Box(
+            contentAlignment = Alignment.CenterStart,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(16.dp) // Padding inside the card
+        ) {
+            Text(text = todoItem.text)
+        }
     }
 }
 

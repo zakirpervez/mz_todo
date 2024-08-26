@@ -7,9 +7,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,36 +32,57 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mztodo.ui.screens.viewmodel.CreateTodoViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTodoScreen(
     createTodoViewModel: CreateTodoViewModel = hiltViewModel(), onNavigate: () -> Unit
 ) {
     var text by remember { mutableStateOf("") }
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        val buttonHeight = maxHeight * 0.064f
-        val spacerHeight = maxHeight * 0.04f
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            TextField(modifier = Modifier.fillMaxWidth(),
-                value = text,
-                onValueChange = { text = it },
-                label = { Text("Add TODO") })
-            Spacer(modifier = Modifier.height(spacerHeight))
-            Button(modifier = Modifier
-                .fillMaxWidth()
-                .height(buttonHeight)
-                .align(Alignment.CenterHorizontally), onClick = {
-                createTodoViewModel.addTodoItem(text)
+
+    Scaffold(topBar = {
+        TopAppBar(
+            title = { Text(text = "Create Todo") },
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        )
+    }, floatingActionButton = {
+        FloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            onClick = {
                 onNavigate()
             }) {
-                Text(text = "Add todo")
+            Icon(Icons.Default.Add, contentDescription = "Add")
+        }
+    }) { paddingValues ->
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            val buttonHeight = maxHeight * 0.064f
+            val spacerHeight = maxHeight * 0.04f
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                TextField(modifier = Modifier.fillMaxWidth(),
+                    value = text,
+                    onValueChange = { text = it },
+                    label = { Text("Add TODO") })
+                Spacer(modifier = Modifier.height(spacerHeight))
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(buttonHeight)
+                    .align(Alignment.CenterHorizontally), onClick = {
+                    createTodoViewModel.addTodoItem(text)
+                    onNavigate()
+                }) {
+                    Text(text = "Add todo")
+                }
             }
         }
     }
