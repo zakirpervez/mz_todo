@@ -4,9 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
@@ -24,41 +25,53 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.entities.TodoItem
+import com.example.mztodo.R
 import com.example.mztodo.ui.screens.viewmodel.TodoListViewModel
-import com.example.mztodo.ui.theme.Red
+import com.example.mztodo.ui.theme.Black
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(
     todoListViewModel: TodoListViewModel = hiltViewModel(), onNavigate: () -> Unit
 ) {
-
     LaunchedEffect(Unit) {
         todoListViewModel.loadTodoItems()
     }
 
     val result = todoListViewModel.todoListState.value
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val lazyListState = rememberLazyListState()
+
     Scaffold(topBar = {
         TopAppBar(
-            title = { Text(text = "Todo App") },
+            title = { Text(text = stringResource(id = R.string.app_name)) },
+            scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.secondary,
                 titleContentColor = MaterialTheme.colorScheme.onPrimary
-            )
+            ),
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         )
     }, floatingActionButton = {
-        FloatingActionButton(
-            containerColor = MaterialTheme.colorScheme.secondary,
+        FloatingActionButton(containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
+            shape = CircleShape,
             onClick = {
                 onNavigate()
             }) {
-            Icon(Icons.Default.Add, contentDescription = "Add")
+            Icon(
+                Icons.Default.Add,
+                contentDescription = stringResource(id = R.string.add_todo_content_description)
+            )
         }
     }) { paddingValues ->
 
@@ -82,12 +95,17 @@ fun TodoListScreen(
 
             if (result.todoItems.isNullOrEmpty()) {
                 Text(
-                    text = "No data found, response might be null or empty",
+                    text = stringResource(id = R.string.empty_todo_list),
                     modifier = Modifier.align(Alignment.Center),
-                    color = Red,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = Black
                 )
             } else {
-                LazyColumn {
+                LazyColumn(
+                    state = lazyListState,
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                ) {
                     items(result.todoItems.size) {
                         TodoItemView(todoItem = result.todoItems[it])
                     }

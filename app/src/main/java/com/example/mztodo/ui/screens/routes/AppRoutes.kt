@@ -28,8 +28,7 @@ fun AppRoutes(
         ExitTransition.None
     }
 
-    NavHost(
-        modifier = modifier,
+    NavHost(modifier = modifier,
         navController = navHostController,
         startDestination = startDestination,
         enterTransition = noEnterTransition,
@@ -37,6 +36,7 @@ fun AppRoutes(
         builder = {
             composable(route = NavigationRoutes.Splash.route) {
                 SplashScreen {
+                    navHostController.popBackStack()
                     navHostController.navigate(NavigationRoutes.TodoList.route)
                 }
             }

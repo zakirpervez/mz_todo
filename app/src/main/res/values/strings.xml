@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">MZTodo</string>
+    <string name="app_name" translatable="false">MZTodo</string>
+
+    <string name="empty_todo_list" translatable="false">Press the + button to add a TODO item</string>
+    <string name="create_todo_title" translatable="false">Create Todo</string>
+    <string name="add_todo" translatable="false">Add TODO</string>
+
+    <string name="add_todo_content_description" translatable="false">Press button to add a TODO item</string>
 </resources>
