@@ -53,7 +53,7 @@ fun CreateTodoScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
             val buttonHeight = maxHeight * 0.064f
             val spacerHeight = maxHeight * 0.04f

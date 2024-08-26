@@ -30,9 +30,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Toast.makeText(this, "Injection is working ${context}", Toast.LENGTH_LONG).show()
-
+        
         setContent {
             MZTodoTheme {
                 // A surface container using the 'background' color from the theme
