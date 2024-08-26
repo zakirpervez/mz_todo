@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +40,9 @@ fun CreateTodoScreen(
     createTodoViewModel: CreateTodoViewModel = hiltViewModel(), onNavigate: () -> Unit
 ) {
     var text by remember { mutableStateOf("") }
+    val configuration = LocalConfiguration.current
+    val isLandscape =
+        configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
 
     Scaffold(topBar = {
         TopAppBar(
@@ -53,15 +57,24 @@ fun CreateTodoScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = if (isLandscape) {
+                Alignment.Center
+            } else {
+                Alignment.TopCenter
+            }
         ) {
-            val buttonHeight = maxHeight * 0.064f
+            val buttonHeight = if (isLandscape) {
+                maxHeight * 0.2f
+            } else {
+                maxHeight * 0.064f
+            }
             val spacerHeight = maxHeight * 0.04f
+
             Card(
                 modifier = Modifier
                     .padding(8.dp)
-                    .fillMaxWidth()
-                    .height(200.dp),
+                    .fillMaxWidth(if (isLandscape) 0.5f else 1f)
+                    .height(if (isLandscape) maxHeight * 0.6f else 200.dp),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Column(
