@@ -20,39 +20,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.mztodo.ui.screens.viewmodel.CreateTodoViewModel
 
 @Composable
-fun CreateTodoScreen(onNavigate: () -> Unit) {
+fun CreateTodoScreen(
+    createTodoViewModel: CreateTodoViewModel = hiltViewModel(), onNavigate: () -> Unit
+) {
     var text by remember { mutableStateOf("") }
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
         val buttonHeight = maxHeight * 0.064f
         val spacerHeight = maxHeight * 0.04f
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
+            TextField(modifier = Modifier.fillMaxWidth(),
                 value = text,
                 onValueChange = { text = it },
                 label = { Text("Add TODO") })
             Spacer(modifier = Modifier.height(spacerHeight))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(buttonHeight)
-                    .align(Alignment.CenterHorizontally),
-                onClick = {
-//            viewModel.addTodoItem(text)
-                    onNavigate()
-                }) {
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .height(buttonHeight)
+                .align(Alignment.CenterHorizontally), onClick = {
+                createTodoViewModel.addTodoItem(text)
+                onNavigate()
+            }) {
                 Text(text = "Add todo")
             }
         }

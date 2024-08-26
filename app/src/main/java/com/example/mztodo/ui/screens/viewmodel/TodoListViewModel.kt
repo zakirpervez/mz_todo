@@ -23,6 +23,10 @@ class TodoListViewModel @Inject constructor(
     private val _todoListState = mutableStateOf(TodoListState())
     val todoListState: State<TodoListState> = _todoListState
 
+    init {
+        loadTodoItems()
+    }
+
     fun loadTodoItems() {
         getTodoItemsUseCase.invoke().onEach { result ->
             when (result) {

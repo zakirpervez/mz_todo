@@ -1,9 +1,9 @@
 package com.example.data.di
 
 import android.content.Context
+import androidx.room.Room
 import com.example.data.database.TodoDatabase
 import com.example.data.database.dao.TodoDao
-import com.example.data.database.provider.DatabaseProvider
 import com.example.data.repository.TodoRepository
 import com.example.domain.repository.Repository
 import dagger.Module
@@ -19,7 +19,9 @@ object DataModule {
     @Provides
     @Singleton
     fun providerTodoDatabase(@ApplicationContext context: Context): TodoDatabase {
-        return DatabaseProvider.getInstance(context)
+        return Room.databaseBuilder(
+            context.applicationContext, TodoDatabase::class.java, "todo_database"
+        ).build()
     }
 
     @Provides

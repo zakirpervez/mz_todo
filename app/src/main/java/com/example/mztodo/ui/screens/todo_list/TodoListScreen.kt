@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
@@ -27,6 +28,11 @@ import com.example.mztodo.ui.screens.viewmodel.TodoListViewModel
 fun TodoListScreen(
     todoListViewModel: TodoListViewModel = hiltViewModel(), onNavigate: () -> Unit
 ) {
+
+    LaunchedEffect(Unit) {
+        todoListViewModel.loadTodoItems()
+    }
+
     val result = todoListViewModel.todoListState.value
     Scaffold(floatingActionButton = {
         FloatingActionButton(onClick = {
@@ -35,6 +41,7 @@ fun TodoListScreen(
             Icon(Icons.Default.Add, contentDescription = "Add")
         }
     }) { paddingValues ->
+
         if (result.isLoading) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -47,7 +54,7 @@ fun TodoListScreen(
                 )
             }
         }
-        
+
         if (result.errorMessage.isNotEmpty()) {
             Box(
                 contentAlignment = Alignment.Center,

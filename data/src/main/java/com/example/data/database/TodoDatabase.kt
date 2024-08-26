@@ -6,6 +6,6 @@ import com.example.data.database.dao.TodoDao
 import com.example.data.database.entities.TodoItemEntity
 
 @Database(entities = [TodoItemEntity::class], version = 1)
-public abstract class TodoDatabase : RoomDatabase() {
+abstract class TodoDatabase : RoomDatabase() {
     abstract fun getTodoDao(): TodoDao
 }
