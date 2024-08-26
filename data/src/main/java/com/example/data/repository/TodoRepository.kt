@@ -5,8 +5,9 @@ import com.example.data.extensions.toDomain
 import com.example.data.extensions.toEntity
 import com.example.domain.entities.TodoItem
 import com.example.domain.repository.Repository
+import javax.inject.Inject
 
-class TodoRepository(private val todoDao: TodoDao) : Repository {
+class TodoRepository @Inject constructor(private val todoDao: TodoDao) : Repository {
     override suspend fun addTodoItem(todoItem: TodoItem) {
         todoDao.insert(todoItem.toEntity())
     }
