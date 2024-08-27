@@ -17,7 +17,8 @@ import com.example.mztodo.ui.screens.todo_list.TodoListScreen
 fun AppRoutes(
     modifier: Modifier,
     navHostController: NavHostController,
-    startDestination: String = NavigationRoutes.Splash.route
+    startDestination: String = NavigationRoutes.Splash.route,
+    //sharedViewModel: SharedViewModel = hiltViewModel()
 ) {
     val noEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition =
         {
@@ -41,14 +42,24 @@ fun AppRoutes(
                 }
             }
 
-            composable(route = NavigationRoutes.TodoList.route) {
-                TodoListScreen {
+            composable(
+                route = NavigationRoutes.TodoList.route,
+            ) {
+                TodoListScreen(
+                    // sharedViewModel = sharedViewModel,
+                    navHostController = navHostController
+                ) {
                     navHostController.navigate(NavigationRoutes.CreateTodo.route)
                 }
             }
 
             composable(route = NavigationRoutes.CreateTodo.route) {
-                CreateTodoScreen {
+                CreateTodoScreen { errorMessage ->
+                    // sharedViewModel.setResult(errorMessage)
+                    navHostController
+                        .previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("error", errorMessage)
                     navHostController.popBackStack()
                 }
             }

@@ -9,6 +9,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert.*
 import org.junit.Before
@@ -59,4 +60,31 @@ class CreateTodoViewModelTest {
         assertEquals(errorMessage, failureState.errorMessage)
         assertEquals(false, failureState.status)
     }
+
+    @Test
+    fun `addTodoItem should handle error text and update createTodoState with loading and error message`() =
+        runBlocking {
+            val dispatcher = TestCoroutineDispatcher()
+            Dispatchers.setMain(dispatcher)
+            val addTodoItemUseCase: AddTodoItemUseCase = mockk()
+            val viewModel = CreateTodoViewModel(addTodoItemUseCase)
+            viewModel.addTodoItem("Error")
+
+            // Assert loading state
+            val loadingState: CreateTodoState = viewModel.createTodoState.value
+            assertEquals(true, loadingState.isLoading)
+            assertEquals("", loadingState.errorMessage)
+            assertEquals(false, loadingState.status)
+
+            // Advance time by 3000ms to simulate delay
+            dispatcher.scheduler.apply { advanceTimeBy(3000); runCurrent() }
+
+            // Assert error state after delay
+            val errorState: CreateTodoState = viewModel.createTodoState.value
+            assertEquals(false, errorState.isLoading)
+            assertEquals("Failed to add TODO", errorState.errorMessage)
+            assertEquals(false, errorState.status)
+
+            dispatcher.cleanupTestCoroutines()
+        }
 }
