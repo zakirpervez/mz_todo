@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.entities.DataWrapper
+import com.example.domain.entities.Result
 import com.example.domain.entities.TodoItem
 import com.example.domain.use_case.add_todo_item.AddTodoItemUseCase
 import com.example.mztodo.ui.screens.create_todo.state.CreateTodoState
@@ -22,15 +22,15 @@ class CreateTodoViewModel @Inject constructor(private val addTodoItemUseCase: Ad
     fun addTodoItem(text: String) {
         addTodoItemUseCase.invoke(TodoItem(text = text)).onEach { result ->
             when (result) {
-                is DataWrapper.Loading -> {
+                is Result.Loading -> {
                     _createTodoState.value = CreateTodoState(isLoading = true)
                 }
 
-                is DataWrapper.Success -> {
+                is Result.Success -> {
                     _createTodoState.value = CreateTodoState(status = true)
                 }
 
-                is DataWrapper.Failure -> {
+                is Result.Failure -> {
                     _createTodoState.value = CreateTodoState(errorMessage = result.errorMessage)
                 }
             }

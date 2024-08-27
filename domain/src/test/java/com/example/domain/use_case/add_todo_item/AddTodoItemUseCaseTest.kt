@@ -1,6 +1,6 @@
 package com.example.domain.use_case.add_todo_item
 
-import com.example.domain.entities.DataWrapper
+import com.example.domain.entities.Result
 import com.example.domain.entities.TodoItem
 import com.example.domain.repository.Repository
 import io.mockk.coEvery
@@ -28,13 +28,13 @@ class AddTodoItemUseCaseTest {
             val todoItem = TodoItem(id = 1, text = "Test Todo", isCompleted = false)
             coEvery { repository.addTodoItem(todoItem) } returns Unit
 
-            val result = mutableListOf<DataWrapper<Unit>>()
+            val result = mutableListOf<Result<Unit>>()
             val flow = addTodoItemUseCase(todoItem)
             flow.toList(result)
 
             assertEquals(2, result.size)
-            assertTrue(result[0] is DataWrapper.Loading)
-            assertTrue(result[1] is DataWrapper.Success)
+            assertTrue(result[0] is com.example.domain.entities.DataWrapper.Result.Loading)
+            assertTrue(result[1] is com.example.domain.entities.DataWrapper.Result.Success)
             coVerify { repository.addTodoItem(todoItem) }
         }
 
@@ -45,14 +45,14 @@ class AddTodoItemUseCaseTest {
             val exceptionMessage = "Something went wrong"
             coEvery { repository.addTodoItem(todoItem) } throws Exception(exceptionMessage)
 
-            val result = mutableListOf<DataWrapper<Unit>>()
+            val result = mutableListOf<Result<Unit>>()
             val flow = addTodoItemUseCase(todoItem)
             flow.toList(result)
 
             assertEquals(2, result.size)
-            assertTrue(result[0] is DataWrapper.Loading)
-            assertTrue(result[1] is DataWrapper.Failure)
-            assertEquals(exceptionMessage, (result[1] as DataWrapper.Failure).errorMessage)
+            assertTrue(result[0] is com.example.domain.entities.DataWrapper.Result.Loading)
+            assertTrue(result[1] is com.example.domain.entities.DataWrapper.Result.Failure)
+            assertEquals(exceptionMessage, (result[1] as com.example.domain.entities.DataWrapper.Result.Failure).errorMessage)
             coVerify { repository.addTodoItem(todoItem) }
         }
 }

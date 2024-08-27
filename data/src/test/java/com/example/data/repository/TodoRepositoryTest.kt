@@ -7,7 +7,6 @@ import com.example.domain.entities.TodoItem
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -19,12 +18,12 @@ import org.junit.Test
 class TodoRepositoryTest {
 
     private lateinit var todoDao: TodoDao
-    private lateinit var todoRepository: TodoRepository
+    private lateinit var repositoryImpl: RepositoryImpl
 
     @Before
     fun setUp() {
         todoDao = mockk()
-        todoRepository = TodoRepository(todoDao)
+        repositoryImpl = RepositoryImpl(todoDao)
     }
 
     @Test
@@ -32,7 +31,7 @@ class TodoRepositoryTest {
         val todoItem = TodoItem(id = 1, text = "Test Todo", isCompleted = false)
         val todoEntity = todoItem.toEntity()
         coEvery { todoDao.insert(any()) } just Runs
-        todoRepository.addTodoItem(todoItem)
+        repositoryImpl.addTodoItem(todoItem)
         coVerify { todoDao.insert(todoEntity) }
     }
 
@@ -46,7 +45,7 @@ class TodoRepositoryTest {
 
         coEvery { todoDao.getAllTodoItems() } returns todoItems
 
-        val result = todoRepository.getTodoItems()
+        val result = repositoryImpl.getTodoItems()
         assertEquals(todoItems.size, result.size)
         assertTrue(result.all { it is TodoItem })
     }

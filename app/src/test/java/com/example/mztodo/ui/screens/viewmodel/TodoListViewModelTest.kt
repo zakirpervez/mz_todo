@@ -1,7 +1,7 @@
 package com.example.mztodo.ui.screens.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.domain.entities.DataWrapper
+import com.example.domain.entities.Result
 import com.example.domain.entities.TodoItem
 import com.example.domain.use_case.get_todo_item.GetTodoItemsUseCase
 import com.example.mztodo.ui.screens.todo_list.state.TodoListState
@@ -10,7 +10,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
@@ -42,7 +41,7 @@ class TodoListViewModelTest {
         val todoItems = listOf(todoItem1, todoItem2)
 
         val flow = flow {
-            emit(DataWrapper.Success(todoItems))
+            emit(Result.Success(todoItems))
         }
 
         val useCase: GetTodoItemsUseCase = mockk()
@@ -61,8 +60,8 @@ class TodoListViewModelTest {
 
     @Test
     fun `loadTodoItems should update todoListState with failure state`() = runBlockingTest {
-        val flow = flow<DataWrapper<List<TodoItem>>> {
-            emit(DataWrapper.Failure("Error occurred"))
+        val flow = flow<Result<List<TodoItem>>> {
+            emit(Result.Failure("Error occurred"))
         }
 
         val useCase: GetTodoItemsUseCase = mockk()

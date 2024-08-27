@@ -1,7 +1,7 @@
 package com.example.mztodo.ui.screens.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.domain.entities.DataWrapper
+import com.example.domain.entities.Result
 import com.example.domain.use_case.add_todo_item.AddTodoItemUseCase
 import com.example.mztodo.ui.screens.create_todo.state.CreateTodoState
 import io.mockk.coEvery
@@ -31,7 +31,7 @@ class CreateTodoViewModelTest {
         val addTodoItemUseCase: AddTodoItemUseCase = mockk()
 
         coEvery { addTodoItemUseCase.invoke(any()) } returns flow {
-            emit(DataWrapper.Success(Unit))
+            emit(Result.Success(Unit))
         }
 
         val viewModel = CreateTodoViewModel(addTodoItemUseCase)
@@ -48,7 +48,7 @@ class CreateTodoViewModelTest {
         val errorMessage = "Error occurred"
         val addTodoItemUseCase: AddTodoItemUseCase = mockk()
         coEvery { addTodoItemUseCase.invoke(any()) } returns flow {
-            emit(DataWrapper.Failure(errorMessage))
+            emit(Result.Failure(errorMessage))
         }
 
         val viewModel = CreateTodoViewModel(addTodoItemUseCase)
