@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 fun TodoAppBar(
     modifier: Modifier,
     text: String,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
         modifier = modifier,

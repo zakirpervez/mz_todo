@@ -1,6 +1,7 @@
 package com.example.mztodo.ui.screens.splash
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -25,8 +26,14 @@ import kotlinx.coroutines.delay
 fun SplashScreen(onNavigate: () -> Unit) {
     var startAnimation by remember { mutableStateOf(false) }
 
-    val alpha = animateFloatAsState(targetValue = if (startAnimation) 1f else 0f, label = "")
-    val scale = animateFloatAsState(targetValue = if (startAnimation) 1f else 0.5f, label = "")
+    val alpha by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(durationMillis = 1000), label = ""
+    )
+    val scale by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0.5f,
+        animationSpec = tween(durationMillis = 1000), label = ""
+    )
 
     LaunchedEffect(Unit) {
         startAnimation = true
@@ -39,8 +46,8 @@ fun SplashScreen(onNavigate: () -> Unit) {
     ) {
         ShadowText(
             modifier = Modifier
-                .scale(scale.value)
-                .alpha(alpha.value),
+                .scale(scale)
+                .alpha(alpha),
             sText = stringResource(id = R.string.app_name),
             sColor = MaterialTheme.colorScheme.primary
         )
