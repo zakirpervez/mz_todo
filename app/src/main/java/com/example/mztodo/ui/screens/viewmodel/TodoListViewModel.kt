@@ -25,18 +25,10 @@ class TodoListViewModel @Inject constructor(
 
     fun loadTodoItems() {
         getTodoItemsUseCase.invoke().onEach { result ->
-            when (result) {
-                is Result.Loading -> {
-                    _todoListState.value = TodoListState(isLoading = true)
-                }
-
-                is Result.Success -> {
-                    _todoListState.value = TodoListState(todoItems = result.data)
-                }
-
-                is Result.Failure -> {
-                    _todoListState.value = TodoListState(errorMessage = result.errorMessage)
-                }
+            _todoListState.value = when (result) {
+                is Result.Loading -> TodoListState(isLoading = true)
+                is Result.Success -> TodoListState(todoItems = result.data)
+                is Result.Failure -> TodoListState(errorMessage = result.errorMessage)
             }
         }.launchIn(viewModelScope)
     }

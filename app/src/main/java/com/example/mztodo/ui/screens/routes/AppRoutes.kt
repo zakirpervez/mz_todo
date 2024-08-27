@@ -18,7 +18,6 @@ fun AppRoutes(
     modifier: Modifier,
     navHostController: NavHostController,
     startDestination: String = NavigationRoutes.Splash.route,
-    //sharedViewModel: SharedViewModel = hiltViewModel()
 ) {
     val noEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition =
         {
@@ -46,7 +45,6 @@ fun AppRoutes(
                 route = NavigationRoutes.TodoList.route,
             ) {
                 TodoListScreen(
-                    // sharedViewModel = sharedViewModel,
                     navHostController = navHostController
                 ) {
                     navHostController.navigate(NavigationRoutes.CreateTodo.route)
@@ -55,7 +53,6 @@ fun AppRoutes(
 
             composable(route = NavigationRoutes.CreateTodo.route) {
                 CreateTodoScreen { errorMessage ->
-                    // sharedViewModel.setResult(errorMessage)
                     navHostController
                         .previousBackStackEntry
                         ?.savedStateHandle

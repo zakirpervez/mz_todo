@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -23,8 +26,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -33,17 +36,17 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.common.composable.AddTodoText
+import com.example.common.composable.ErrorText
+import com.example.common.composable.TodoAppBar
 import com.example.domain.entities.TodoItem
 import com.example.mztodo.R
 import com.example.mztodo.ui.screens.viewmodel.TodoListViewModel
-import com.example.mztodo.ui.theme.Black
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,46 +55,33 @@ fun TodoListScreen(
     navHostController: NavHostController? = null,
     onNavigate: () -> Unit
 ) {
-
-    val errorMessage =
-        navHostController?.currentBackStackEntry?.savedStateHandle?.get<String>("error") ?: ""
-
-    if (errorMessage.isNotEmpty()) {
-        Toast.makeText(LocalContext.current, errorMessage, Toast.LENGTH_LONG).show()
-    }
-
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
+        val errorMessage =
+            navHostController?.currentBackStackEntry?.savedStateHandle?.get<String>("error") ?: ""
+        if (errorMessage.isNotEmpty()) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+        }
         todoListViewModel.loadTodoItems()
     }
 
     val result = todoListViewModel.todoListState.value
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val lazyListState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
     val configuration = LocalConfiguration.current
     val isLandscape =
         configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
 
     Scaffold(topBar = {
-        TopAppBar(
-            title = { Text(text = stringResource(id = R.string.app_name)) },
-            scrollBehavior = scrollBehavior,
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        TodoAppBar(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            text = stringResource(id = R.string.app_name),
+            scrollBehavior = scrollBehavior
         )
     }, floatingActionButton = {
-        FloatingActionButton(containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            shape = CircleShape,
-            onClick = {
-                onNavigate()
-            }) {
-            Icon(
-                Icons.Default.Add,
-                contentDescription = stringResource(id = R.string.add_todo_content_description)
-            )
+        TodoListFloatingActionButton {
+            onNavigate()
         }
     }) { paddingValues ->
 
@@ -108,41 +98,75 @@ fun TodoListScreen(
             }
 
             if (result.errorMessage.isNotEmpty()) {
-                Text(
-                    text = result.errorMessage, modifier = Modifier.align(Alignment.Center)
+                ErrorText(
+                    modifier = Modifier.align(Alignment.Center), errorMessage = result.errorMessage
                 )
             }
 
             if (result.todoItems.isNullOrEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.empty_todo_list),
+                AddTodoText(
                     modifier = Modifier.align(Alignment.Center),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = Black
+                    text = stringResource(id = R.string.empty_todo_list)
                 )
             } else {
-                if (isLandscape) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2), // 3 columns in landscape mode
-                        contentPadding = PaddingValues(8.dp), modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(result.todoItems.size) {
-                            TodoItemView(todoItem = result.todoItems[it])
-                        }
-                    }
-                } else {
-                    LazyColumn(
-                        state = lazyListState,
-                        modifier = Modifier
-                            .nestedScroll(scrollBehavior.nestedScrollConnection)
-                            .fillMaxSize()
-                    ) {
-                        items(result.todoItems.size) {
-                            TodoItemView(todoItem = result.todoItems[it])
-                        }
-                    }
-                }
+                TodoListContent(
+                    todoItems = result.todoItems,
+                    isLandscape = isLandscape,
+                    lazyListState = lazyListState,
+                    lazyGridState = lazyGridState,
+                    scrollBehavior = scrollBehavior
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun TodoListFloatingActionButton(onNavigate: () -> Unit) {
+    FloatingActionButton(
+        containerColor = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        shape = CircleShape,
+        onClick = onNavigate
+    ) {
+        Icon(
+            Icons.Default.Add,
+            contentDescription = stringResource(id = R.string.add_todo_content_description)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TodoListContent(
+    todoItems: List<TodoItem>,
+    isLandscape: Boolean,
+    lazyListState: LazyListState,
+    lazyGridState: LazyGridState,
+    scrollBehavior: TopAppBarScrollBehavior
+) {
+    if (isLandscape) {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .fillMaxSize(),
+            columns = GridCells.Fixed(2),
+            state = lazyGridState,
+            contentPadding = PaddingValues(8.dp),
+        ) {
+            items(todoItems.size, key = { it }) {
+                TodoItemView(todoItem = todoItems[it])
+            }
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .fillMaxSize(),
+            state = lazyListState
+        ) {
+            items(todoItems.size, key = { it }) {
+                TodoItemView(todoItem = todoItems[it])
             }
         }
     }
@@ -172,6 +196,5 @@ fun TodoItemView(todoItem: TodoItem) {
 @Composable
 fun TodoListScreenPreview() {
     TodoListScreen {
-
     }
 }
