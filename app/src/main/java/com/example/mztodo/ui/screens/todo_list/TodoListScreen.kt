@@ -1,11 +1,15 @@
 package com.example.mztodo.ui.screens.todo_list
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -26,6 +30,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
@@ -33,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.domain.entities.TodoItem
 import com.example.mztodo.R
 import com.example.mztodo.ui.screens.viewmodel.TodoListViewModel
@@ -41,8 +48,18 @@ import com.example.mztodo.ui.theme.Black
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(
-    todoListViewModel: TodoListViewModel = hiltViewModel(), onNavigate: () -> Unit
+    todoListViewModel: TodoListViewModel = hiltViewModel(),
+    navHostController: NavHostController? = null,
+    onNavigate: () -> Unit
 ) {
+
+    val errorMessage =
+        navHostController?.currentBackStackEntry?.savedStateHandle?.get<String>("error") ?: ""
+
+    if (errorMessage.isNotEmpty()) {
+        Toast.makeText(LocalContext.current, errorMessage, Toast.LENGTH_LONG).show()
+    }
+
     LaunchedEffect(Unit) {
         todoListViewModel.loadTodoItems()
     }
@@ -50,6 +67,9 @@ fun TodoListScreen(
     val result = todoListViewModel.todoListState.value
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val lazyListState = rememberLazyListState()
+    val configuration = LocalConfiguration.current
+    val isLandscape =
+        configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
 
     Scaffold(topBar = {
         TopAppBar(
@@ -102,12 +122,25 @@ fun TodoListScreen(
                     color = Black
                 )
             } else {
-                LazyColumn(
-                    state = lazyListState,
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                ) {
-                    items(result.todoItems.size) {
-                        TodoItemView(todoItem = result.todoItems[it])
+                if (isLandscape) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2), // 3 columns in landscape mode
+                        contentPadding = PaddingValues(8.dp), modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(result.todoItems.size) {
+                            TodoItemView(todoItem = result.todoItems[it])
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        state = lazyListState,
+                        modifier = Modifier
+                            .nestedScroll(scrollBehavior.nestedScrollConnection)
+                            .fillMaxSize()
+                    ) {
+                        items(result.todoItems.size) {
+                            TodoItemView(todoItem = result.todoItems[it])
+                        }
                     }
                 }
             }

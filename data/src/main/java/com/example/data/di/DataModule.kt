@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.data.database.TodoDatabase
 import com.example.data.database.dao.TodoDao
-import com.example.data.repository.TodoRepository
+import com.example.data.repository.RepositoryImpl
 import com.example.domain.repository.Repository
 import dagger.Module
 import dagger.Provides
@@ -31,6 +31,6 @@ object DataModule {
 
     @Provides
     fun provideTodoRepository(todoDao: TodoDao): Repository {
-        return TodoRepository(todoDao)
+        return RepositoryImpl(todoDao)
     }
 }

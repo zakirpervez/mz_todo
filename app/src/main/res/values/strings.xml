@@ -6,4 +6,5 @@
     <string name="add_todo" translatable="false">Add TODO</string>
 
     <string name="add_todo_content_description" translatable="false">Press button to add a TODO item</string>
+    <string name="todo_error">Failed to add TODO</string>
 </resources>

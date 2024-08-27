@@ -7,7 +7,7 @@ import com.example.domain.entities.TodoItem
 import com.example.domain.repository.Repository
 import javax.inject.Inject
 
-class TodoRepository @Inject constructor(private val todoDao: TodoDao) : Repository {
+class RepositoryImpl @Inject constructor(private val todoDao: TodoDao) : Repository {
     override suspend fun addTodoItem(todoItem: TodoItem) {
         todoDao.insert(todoItem.toEntity())
     }
