@@ -43,15 +43,17 @@ fun CreateTodoScreen(
     createTodoViewModel: CreateTodoViewModel = hiltViewModel(),
     onNavigate: (String) -> Unit
 ) {
-    val result = createTodoViewModel.createTodoState.value
+    val result by createTodoViewModel.createTodoState
     var text by remember { mutableStateOf("") }
     val configuration = LocalConfiguration.current
     val isLandscape =
         configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
 
-    LaunchedEffect(result.errorMessage) {
+    LaunchedEffect(result) {
         if (result.errorMessage.isNotEmpty()) {
             onNavigate(result.errorMessage)
+        } else if (result.status) {
+            onNavigate("")
         }
     }
 
